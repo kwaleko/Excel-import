@@ -1,0 +1,63 @@
+static Server void commitData()
+{
+    AxLedgerJournalTable journalTable;
+    AxLedgerJournalTrans journalTrans;
+    ProjJournalId journalNumber;
+    createDimension dimCombination;
+    createDimensionDefault defaultDimension;
+    str mainAccount,department ,project,employee,general;
+    tmpGl generalLedgerTempTable;
+    DimensionAttributeValueCombination dv;
+    str 30 value;
+
+    //create journal header
+    journalTable = new AxLedgerJournalTable();
+    journalTable.parmjournalname('GL');
+    journalTable.save();
+
+    journalNumber=journalTable.ledgerJournalTable().JournalNum;
+
+    while select * from generalLedgerTempTable
+    {
+        journalTrans = new AxLedgerJournalTrans();
+        journalTrans.parmJournalNum(journalTable.ledgerjournaltable().JournalNum);
+        journalTrans.parmCurrencyCode('SAR');
+        journalTrans.parmExchRate(Currency::exchRate(journalTrans.ledgerJournalTrans().CurrencyCode));
+        dimCombination =new createDimension();
+        mainAccount=generalLedgerTempTable.account;
+        department=generalLedgerTempTable.department;
+        project=generalLedgerTempTable.project;
+        employee=generalLedgerTempTable.employee;
+        general=generalLedgerTempTable.general;
+        if(generalLedgerTempTable.account=='12101' || generalLedgerTempTable.account=='12102' || generalLedgerTempTable.account=='12150'){
+            journalTrans.parmAccountType(ledgerJournalACType::Bank);
+            dv.clear();
+            if(generalLedgerTempTable.account=='12101')
+                value='Al Rajhi';
+            if(generalLedgerTempTable.account=='12102')
+                value='Al-Rajhi';
+            if(generalLedgerTempTable.account=='12150')
+                value='Petty Cash';
+            select firstOnly recid from dv where dv.DisplayValue==value;
+            journalTrans.parmLedgerDimension(dv.recid);
+            defaultDimension = new  createDimensionDefault();
+            journalTrans.parmDefaultDimension( defaultDimension.getDimension(department,project,employee,general));
+        }
+        else{
+            journalTrans.parmAccountType(ledgerJournalACType::Ledger);
+            journalTrans.parmLedgerDimension(dimCombination.getLedgerAccAndGeneralv1(mainAccount,department ,project,employee,general));
+
+        }
+        journalTrans.parmAmountCurDebit(str2num(generalLedgerTempTable.debit));
+        journalTrans.parmAmountCurCredit(str2num(generalLedgerTempTable.credit));
+        journalTrans.parmTransDate(generalLedgerTempTable.dDate);
+        journalTrans.parmTxt(generalLedgerTempTable.description);
+        journaltrans.save();
+
+    }
+    ttsBegin;
+     delete_from generalLedgerTempTable;
+    ttsCommit;
+    info('Done');
+
+}

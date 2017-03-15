@@ -1,0 +1,190 @@
+Public void runIntegration()
+{
+    tmpGl generalLedgerTempTable;
+     FileName filename, filepath;
+    FilePath path;
+    SysExcelApplication application;
+     SysExcelWorkbooks workbooks;
+     SysExcelWorkbook workbook;
+     SysExcelWorksheets worksheets;
+     SysExcelWorksheet worksheet;
+     SysExcelCells cells;
+    createDimension dimCombination;
+    DimensionAttributeValueCombination dv;
+    real debit, credit;
+    str mainAccount,department, Project ,Description,employee,general,debitStr,creditStr;
+     tmpGl tbl_glTmp;
+    //SysExcelCells cells;
+       RecordInsertList recordsToBeInserted;
+
+
+      str COMVariant2Str2(COMVariant _cv,
+                       int _decimals = 4,
+                       int _characters = 0,
+                       int _separator1 = 0,
+                       int _separator2 = 0)
+    {
+        switch(_cv.variantType())
+        {
+            case (COMVariantType::VT_BSTR):
+                return _cv.bStr();
+
+            case (COMVariantType::VT_R4):
+                return num2str(_cv.float(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_R8):
+                return num2str(_cv.double(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_DECIMAL):
+                return num2str(_cv.decimal(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_DATE):
+                return date2str(_cv.date(),
+                                123,
+                                2,
+                                1,
+                                2,
+                                1,
+                                4);
+
+            case (COMVariantType::VT_EMPTY):
+                return "";
+
+            default:
+                throw error(strfmt("@SYS26908",
+                                    _cv.variantType()));
+        }
+
+        return "";
+    }
+    str COMVariant2Str(COMVariant _cv,
+                       int _decimals = 0,
+                       int _characters = 0,
+                       int _separator1 = 0,
+                       int _separator2 = 0)
+    {
+        switch(_cv.variantType())
+        {
+            case (COMVariantType::VT_BSTR):
+                return _cv.bStr();
+
+            case (COMVariantType::VT_R4):
+                return num2str(_cv.float(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_R8):
+                return num2str(_cv.double(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_DECIMAL):
+                return num2str(_cv.decimal(),
+                                _characters,
+                                _decimals,
+                                _separator1,
+                                _separator2);
+
+            case (COMVariantType::VT_DATE):
+                return date2str(_cv.date(),
+                                123,
+                                2,
+                                1,
+                                2,
+                                1,
+                                4);
+
+            case (COMVariantType::VT_EMPTY):
+                return "";
+
+            default:
+                throw error(strfmt("@SYS26908",
+                                    _cv.variantType()));
+        }
+
+        return "";
+    }
+    /*dialog = new Dialog("Project Expenses");
+     dialogField = dialog.addField(ExtendedTypeStr("FilenameOpen"),"Source file");
+        if (dialog.run())
+         {
+             Filepath = dialogField.value();
+            /* application = SysExcelApplication::construct();
+             workbooks = application.workbooks();
+             application.displayAlerts(false); */
+             //specify the file path that you want to read
+             filename = FilePath;
+           /*  try
+             {
+             workbooks.open(filename);
+             }
+             catch (Exception::Error)
+             {
+             throw error("File cannot be opened.");
+             }
+
+            workbook = workbooks.item(1);
+            worksheets = workbook.worksheets();
+            worksheet = worksheets.itemFromNum(1); //Here 1 is the worksheet Number
+            cells = worksheet.cells();*/
+         } */
+    row=1;
+
+    recordsToBeInserted=new RecordInsertList(tableNum(tmpGl));
+       ttsBegin;
+     delete_from generalLedgerTempTable;
+    ttsCommit;
+
+ /*   do
+    {
+       row++;
+          debitStr=COMVariant2Str2(cells.item(row, 3).value());
+           creditStr=COMVariant2Str2(cells.item(row, 4).value());
+           mainAccount =COMVariant2Str(cells.item(row, 1).value());
+           department =COMVariant2Str(cells.item(row, 5).value());
+           Project  =COMVariant2Str(cells.item(row, 6).value());
+           employee  =COMVariant2Str(cells.item(row, 7).value());
+         general  =COMVariant2Str(cells.item(row, 8).value());
+           description=COMVariant2Str(cells.item(row, 2).value());
+        tbl_glTmp.debit=debitStr;
+        tbl_glTmp.credit=creditStr;
+        tbl_glTmp.account=mainAccount;
+        tbl_glTmp.department=department;
+        tbl_glTmp.project=Project;
+        tbl_glTmp.general=general;
+        tbl_glTmp.description=Description;
+
+         recordsToBeInserted.add(tbl_glTmp);
+       type = cells.item(row+1, 1).value().variantType();
+
+
+ }
+ while (type != COMVariantType::VT_EMPTY);
+      recordsToBeInserted.insertDatabase();
+     this.createFile();
+    info("done");
+    application.quit();
+    application=null;*/
+    filepath=  this.createFile();
+    //info(filepath);
+    this.readFile(filepath);
+
+    ImportGLFromExcel::commitData();
+
+}

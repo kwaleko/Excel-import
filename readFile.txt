@@ -1,0 +1,44 @@
+private void readFile(FilePath  textFile)
+{
+
+      RecordInsertList recordsToBeInserted;
+
+
+
+     tmpGl generalLedgerTmp;
+     TextIo io;
+    boolean flagT ;
+    container con;
+    textFile=textFile+'.txt';
+     new FileIOPermission(textFile, 'r').assert();
+    io = new TextIo(textFile, 'r');
+    if (!io)
+        throw error("@SYS18447");
+    io.inFieldDelimiter('\t');
+    flagT=false;
+     recordsToBeInserted=new RecordInsertList(tableNum(tmpGl));
+    for (con = io.read(); io.status() == IO_Status::Ok; con = io.read())
+    {
+        if(flagT==true)
+        {
+          //  info(conPeek(con,1));
+generalLedgerTmp.dDate= str2DateDMY( conPeek(con,1));
+
+            generalLedgerTmp.account= conPeek(con,2);
+             generalLedgerTmp.description= conPeek(con,3);
+             generalLedgerTmp.debit= conPeek(con,4);
+             generalLedgerTmp.credit= conPeek(con,5);
+             generalLedgerTmp.department= conPeek(con,6);
+            generalLedgerTmp.project= conPeek(con,7);
+             generalLedgerTmp.CopyOfdepartment= conPeek(con,1) ;
+             generalLedgerTmp.employee= conPeek(con,8);
+            generalLedgerTmp.general= conPeek(con,9);
+    recordsToBeInserted.add(generalLedgerTmp);
+           /* ttsBegin;
+            generalLedgerTmp.insert();
+            ttsCommit;*/
+        }
+        flagT=true;
+    }
+            recordsToBeInserted.insertDatabase();
+}

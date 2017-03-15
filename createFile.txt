@@ -1,0 +1,37 @@
+public FilePath createFile()
+{
+
+    #Excel
+    FilePath excelFile ,fPath;// = @'C:\Users\user\Documents\MyExcelFile.xlsx';
+     FileName filename, filepath,fName,fType;
+    FilePath textFile ;// = @'C:\Users\user\Documents\MyTextFile.txt';
+    Microsoft.Office.Interop.Excel.Application  application = new Microsoft.Office.Interop.Excel.ApplicationClass();
+    Microsoft.Office.Interop.Excel.Workbooks    workBooks   = application.get_Workbooks();
+    Microsoft.Office.Interop.Excel.Workbook     workBook;
+   dialog = new Dialog("General Ledger");
+   dialogField = dialog.addField(ExtendedTypeStr("FilenameOpen"),"Source file");
+        if (!dialog.run())
+          return '';
+
+    excelFile = dialogField.value();
+     // info('save0');
+    [fPath,fName,fType]=fileNameSplit(excelFile);
+    textFile =fPath +'\TextFile2';
+    // Save the excel file as tab-separated text
+    application.set_DisplayAlerts(false);
+    application.set_Visible(false);
+    new FileIOPermission(excelFile, 'r').assert();
+    workBooks.Open(excelFile, 0, true, 5, '', '', true, #xlWindows, '', false, false, 1, false, false, 1);
+    CodeAccessPermission::revertAssert();
+    workBook  = workBooks.get_Item(1);
+    new FileIOPermission(textFile, 'w').assert();
+    CodeAccessPermission::revertAssert();
+
+    workBook.SaveAs(textFile, #xlTextWindows, '', '', false, false, null, #xlLocalSessionChanges, false, null, null, false);
+     //  info('save1');
+    workBooks.Close();
+    application.Quit();
+    return textFile;
+
+
+}

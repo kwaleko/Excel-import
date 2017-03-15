@@ -1,0 +1,28 @@
+public class ImportGLFromExcel
+{
+
+     COMVariantType type;
+     Name name;
+     int row;
+
+     str projectID,emplID,deptDimension,emplDimension,projDimension,categorieID ;
+     str 30 personnelNumber;
+     projjournaltable projjournaltable1;
+     ProjJournalTrans projjournaltrans;
+     ProjJournalId journalNumber;
+     real expense,revenue;
+     createDimensionDefault dim ;
+     recid workerRecid1;
+     hcmWorker hcmWorker1;
+     ProjJournalName projJournalName;
+     validateData data;
+     container  validationResult;
+     boolean                             FLAG ,isDimensionValid;
+      NumberSeq               numberSeq;
+     Dialog                              dialog;
+     DialogField                         dialogField;
+     AxLedgerJournalTable journalTable;
+     AxLedgerJournalTrans journalTrans;
+    manageIntegratioinLog log;
+
+}
