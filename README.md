@@ -2,7 +2,7 @@
 TASK : Import Excel file into Dynamixs AX
 
 ## Problems:
-- Takes a lot of times since it insert data in the database record by record
+- Takes a lot of time since it insert data in the database record by record
 - Reading data from EXCEL file is not efficient
 
 ## Solution :
